@@ -74,10 +74,10 @@ dependencies {
     implementation(libs.glide)
 
     implementation(libs.retrofit)
-    implementation(libs.retrofit.converter.json)
     implementation(libs.okhttp)
 
     implementation(libs.kotlin.serialization)
+    implementation(libs.kotlinx.converter)
     implementation(libs.androidx.navigation.compose)
 
 

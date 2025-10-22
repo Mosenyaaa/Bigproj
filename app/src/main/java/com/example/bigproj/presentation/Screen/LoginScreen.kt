@@ -23,10 +23,7 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -37,21 +34,30 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.bigproj.presentation.Screen.state.LoginScreenEvent
-import com.example.bigproj.presentation.Screen.state.LoginScreenState
+import com.example.bigproj.presentation.Screen.viewmodel.AuthEvent
 import com.example.bigproj.presentation.Screen.viewmodel.LoginScreenViewModel
 import com.example.bigproj.presentation.navigation.Screen
 
 @Composable
 fun LoginScreen(
-    onNavigateTo: (Screen) -> Unit = {},
-    state: LoginScreenState,
-    onEvent:(LoginScreenEvent) -> Unit
+    onNavigateTo: (Screen) -> Unit,
 ) {
+    val viewModel = viewModel<LoginScreenViewModel>()
+    val state = viewModel.state
+
+    LaunchedEffect(Unit) {
+        viewModel.events.collect { event ->
+            when (event) {
+                is AuthEvent.NavigateToVerification -> onNavigateTo(Screen.Verification)
+                is AuthEvent.NavigateToRegistration -> onNavigateTo(Screen.Register)
+            }
+        }
+    }
+
     val primaryColor = Color(0xFF2196F3)
     Scaffold { paddingValues ->
         Box(
@@ -157,7 +163,7 @@ fun LoginScreen(
                             OutlinedTextField(
                                 value = state.email,
                                 onValueChange = {
-                                    onEvent(LoginScreenEvent.EmailUpdated(it))
+                                    viewModel.onEvent(LoginScreenEvent.EmailUpdated(it))
                                 },
                                 placeholder = {
                                     Text(
@@ -185,7 +191,9 @@ fun LoginScreen(
 
                         Button(
                             onClick = {
-                                onNavigateTo(Screen.Verification)
+                                viewModel.onEvent(
+                                    LoginScreenEvent.NavigateToScreen(Screen.Verification)
+                                )
                             },
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -227,7 +235,9 @@ fun LoginScreen(
                     modifier = Modifier
                         .padding(top = 16.dp)
                         .clickable {
-                            onNavigateTo(Screen.Register)
+                            viewModel.onEvent(
+                                LoginScreenEvent.NavigateToScreen(Screen.Register)
+                            )
                         }
                 )
 

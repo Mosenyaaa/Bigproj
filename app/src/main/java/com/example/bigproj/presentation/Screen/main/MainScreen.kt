@@ -21,18 +21,13 @@ fun MainScreen(
     onNavigateTo: (Screen) -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
-    var isOk by remember { mutableStateOf(false) }
-    LaunchedEffect(Unit) {
-        coroutineScope.launch {
-            isOk = RetrofitClient.apiService.getAllPosts().isSuccessful
-        }
-    }
+
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = isOk.toString()
+            text = "HELLO NIGGERZ"
         )
     }
 }

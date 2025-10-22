@@ -39,10 +39,8 @@ fun MainNav(
         startDestination = Screen.Login
     ) {
         composable<Screen.Login> {
-            val viewModel = viewModel<LoginScreenViewModel>()
+
             LoginScreen(
-                state = viewModel.state,
-                onEvent = viewModel::onEvent,
                 onNavigateTo = { navigateTo ->
                     navHostController.navigate(navigateTo)
                 }
